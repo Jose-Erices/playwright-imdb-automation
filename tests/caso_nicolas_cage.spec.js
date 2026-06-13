@@ -32,4 +32,3 @@ test.describe('Desafío IMDb - QA Automation', () => {
     await expect(page).toHaveURL(/.*\/title\/.*/, { timeout: 15000 });
   });
 });
-
