@@ -5,7 +5,7 @@ class NacidosHoyPage {
     this.botonMenu = page.locator("#imdbHeader-navDrawerOpen");
   }
 
-  // Navegar a la sección "Personas nacidas hoy" desde el menú 
+  // Navegar a la sección "Personas nacidas hoy" desde el menú
   async navegarANacidosHoy() {
     await this.botonMenu.click();
     await this.page.waitForSelector('[data-testid="panel"]');
@@ -31,7 +31,6 @@ class NacidosHoyPage {
     await enlaceNacidosHoy.evaluate((el) => el.click());
     await this.page.waitForLoadState("domcontentloaded");
   }
-
 
   // Eliminar filtro de cumpleaños predeterminado para evitar conflictos con la fecha que se ingresará
   async eliminarFiltroPredeterminado() {
@@ -98,13 +97,77 @@ class NacidosHoyPage {
     await this.page.waitForURL(/\/name\//);
   }
 
-// Tomamos la captura del perfil de la celebridad nacida ayer.
+  // Tomamos la captura del perfil de la celebridad nacida ayer.
   async tomarCaptura(nombre) {
     await this.page.screenshot({
       path: `screenshots/${nombre}.png`,
       fullPage: true,
     });
   }
-}
 
+  // continuidad al caso numero 5//
+
+  // abrir filtro Fecha de nacimiento
+  async seleccionarFechaNacimiento() {
+    const fechaNacimiento = this.page.locator(
+      '[data-testid="accordion-item-birthDateAccordion"]',
+    );
+
+    await fechaNacimiento.click({
+      force: true,
+    });
+  }
+
+  // Caso 5: ingresar fecha exacta de hoy hace 40 años
+  async buscarCelebridadesNacidasHace40Anios() {
+    const fecha = new Date();
+
+    fecha.setFullYear(fecha.getFullYear() - 40);
+
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const dia = String(fecha.getDate()).padStart(2, "0");
+
+    const fecha40 = `${anio}-${mes}-${dia}`;
+
+    const fechaDesde = this.page.locator('[data-testid="birthDate-start"]');
+
+    const fechaHasta = this.page.locator('[data-testid="birthDate-end"]');
+
+    await fechaDesde.fill(fecha40);
+
+    await fechaHasta.fill(fecha40);
+
+    // Forzamos a IMDb a aplicar el filtro
+    await fechaHasta.press("Enter");
+
+    await this.page.waitForTimeout(1000);
+  }
+
+  //Abrir el primer enlace de descripción del primer resultado de la lista de celebridades nacidas hace 40 años y tomar captura del perfil de la celebridad.
+  async abrirPrimerLinkDescripcion() {
+    await this.page.waitForTimeout(2000);
+
+    const primerResultado = this.page
+      .locator('[data-testid="dli-bio"]')
+      .first();
+
+    const primerLinkDescripcion = primerResultado
+      .locator('a[href*="/title/"], a[href*="/es-es/title/"]')
+      .first();
+
+    await primerLinkDescripcion.waitFor({
+      state: "visible",
+      timeout: 15000,
+    });
+
+    await primerLinkDescripcion.click({
+      force: true,
+    });
+
+    await this.page.waitForURL(/\/title\//, {
+      timeout: 15000,
+    });
+  }
+}
 module.exports = { NacidosHoyPage };
