@@ -5,58 +5,162 @@ class SeriesPage {
     this.botonMenu = page.locator('#imdbHeader-navDrawerOpen');
 
     this.categoriaSeries = page.locator(
-      'label[for="nav-link-categories-tv"]'
+      'label[for="nav-link-categories-tvshows"]'
     );
 
-    this.enlaceTop250 = page.locator(
+    this.enlaceTop250Series = page.locator(
       'a[href*="/chart/toptv"]'
     );
+
+    this.breakingBad = page
+      .locator('a')
+      .filter({ hasText: 'Breaking Bad' })
+      .first();
   }
 
   async navegarATop250Series() {
     await this.botonMenu.click();
 
-    await this.page.waitForSelector(
-      '[data-testid="panel"]'
-    );
+    await this.page.waitForSelector('[data-testid="panel"]');
 
-    await this.categoriaSeries.click({
-      force: true
+    await this.categoriaSeries.waitFor({
+      state: 'visible',
+      timeout: 10000
     });
 
-    await this.enlaceTop250.click({
-      force: true
+    // Click con JavaScript para evitar error de viewport
+    await this.categoriaSeries.evaluate(
+      element => element.click()
+    );
+
+    await this.enlaceTop250Series.waitFor({
+      state: 'visible',
+      timeout: 10000
+    });
+
+  await this.enlaceTop250Series.evaluate(
+  element => element.click()
+);
+
+    await this.page.waitForURL(/toptv/, {
+      timeout: 15000
     });
   }
 
   async abrirBreakingBad() {
-    await this.page
-      .locator('a')
-      .filter({ hasText: 'Breaking Bad' })
-      .first()
-      .click();
+    await this.breakingBad.waitFor({
+      state: 'visible',
+      timeout: 10000
+    });
+
+    await this.breakingBad.click();
+
+    await this.page.waitForURL(/\/title\/tt/, {
+      timeout: 15000
+    });
   }
 
-  async irAFotos() {
-    await this.page
-      .locator('a')
-      .filter({ hasText: 'Photos' })
-      .first()
-      .click();
-  }
+ async irAFotos() {
+  const enlaceFotos = this.page.locator(
+    '[data-testid="hero__photo-link"]'
+  );
 
-  async filtrarDannyTrejo() {
-    await this.page
-      .locator('text=Danny Trejo')
-      .click();
-  }
+  await enlaceFotos.waitFor({
+    state: 'visible',
+    timeout: 10000
+  });
 
-  async abrirSegundaFoto() {
-    await this.page
-      .locator('img')
-      .nth(1)
-      .click();
-  }
+  await enlaceFotos.click();
+
+  await this.page.waitForURL(/mediaviewer/, {
+    timeout: 15000
+  });
+}
+
+async filtrarPorDannyTrejo() {
+
+  // Abrir vista organizada de galería
+  const botonGaleria = this.page.locator(
+    'button:has(svg), a:has(svg)'
+  ).filter({
+    has: this.page.locator('path[d*="M4.8 14"]')
+  }).first();
+
+  await botonGaleria.click({
+    force: true
+  });
+
+  await this.page.waitForTimeout(1000);
+
+  // Abrir filtro azul
+  const botonFiltro = this.page.locator(
+    'button[aria-label="Abrir aviso de filtro"]'
+  ).first();
+
+  await botonFiltro.waitFor({
+    state: 'visible',
+    timeout: 10000
+  });
+
+  await botonFiltro.click({
+    force: true
+  });
+
+  await this.page.waitForTimeout(1000);
+
+  // Seleccionar Danny Trejo desde el select del filtro
+  const selectorPersona = this.page.locator(
+    'select[name="Persona-filter-select-dropdown"]'
+  );
+
+  await selectorPersona.waitFor({
+    state: 'attached',
+    timeout: 10000
+  });
+
+  await selectorPersona.selectOption({
+    value: 'nm0001803'
+  });
+
+  await this.page.waitForLoadState('domcontentloaded');
+const botonCerrarFiltro = this.page.locator(
+  'button:has(path[d*="M18.3 5.71"])'
+).last();
+
+await botonCerrarFiltro.waitFor({
+  state: 'attached',
+  timeout: 10000
+});
+
+await botonCerrarFiltro.evaluate(el => el.click());
+
+await this.page.waitForTimeout(1000);
+}
+
+async abrirSegundaFoto() {
+  await this.page.waitForTimeout(1000);
+
+  // Cerrar cualquier overlay/comercial si aparece
+  await this.page.keyboard.press('Escape');
+
+  // Tomar la segunda foto desde el enlace padre
+  const segundaFoto = this.page
+    .locator('a:has(img.ipc-image)')
+    .nth(1);
+
+  await segundaFoto.waitFor({
+    state: 'visible',
+    timeout: 10000
+  });
+
+  await segundaFoto.evaluate(el => el.click());
+
+  await this.page.waitForURL(/mediaviewer|rm/, {
+    timeout: 15000
+  });
+
+  console.log('Segunda foto abierta correctamente');
+}
 }
 
 module.exports = { SeriesPage };
