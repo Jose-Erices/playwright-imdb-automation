@@ -1,28 +1,22 @@
 class SeriesPage {
   constructor(page) {
     this.page = page;
-
     this.botonMenu = page.locator('#imdbHeader-navDrawerOpen');
-
     this.categoriaSeries = page.locator(
       'label[for="nav-link-categories-tvshows"]'
     );
-
     this.enlaceTop250Series = page.locator(
       'a[href*="/chart/toptv"]'
     );
-
     this.breakingBad = page
       .locator('a')
       .filter({ hasText: 'Breaking Bad' })
       .first();
   }
-
+  // Método para navegar a la sección de Top 250 Series
   async navegarATop250Series() {
     await this.botonMenu.click();
-
     await this.page.waitForSelector('[data-testid="panel"]');
-
     await this.categoriaSeries.waitFor({
       state: 'visible',
       timeout: 10000
@@ -46,20 +40,18 @@ class SeriesPage {
       timeout: 15000
     });
   }
-
+// Método para abrir el detalle de Breaking Bad
   async abrirBreakingBad() {
     await this.breakingBad.waitFor({
       state: 'visible',
       timeout: 10000
     });
-
     await this.breakingBad.click();
-
     await this.page.waitForURL(/\/title\/tt/, {
       timeout: 15000
     });
   }
-
+// Método para validar que el título de la serie es visible.
  async irAFotos() {
   const enlaceFotos = this.page.locator(
     '[data-testid="hero__photo-link"]'
@@ -69,17 +61,14 @@ class SeriesPage {
     state: 'visible',
     timeout: 10000
   });
-
   await enlaceFotos.click();
-
   await this.page.waitForURL(/mediaviewer/, {
     timeout: 15000
   });
 }
 
+// Método para filtrar fotos por el actor Danny Trejo
 async filtrarPorDannyTrejo() {
-
-  // Abrir vista organizada de galería
   const botonGaleria = this.page.locator(
     'button:has(svg), a:has(svg)'
   ).filter({

@@ -12,7 +12,7 @@ class BarraSuperiorPage {
       )
       .first();
   }
-
+ // Método para buscar un actor por nombre y acceder a su perfil
   async buscarActor(nombreActor) {
     await this.campoBusqueda.waitFor({
       state: 'visible',
@@ -20,7 +20,6 @@ class BarraSuperiorPage {
     });
 
     await this.campoBusqueda.click();
-
     await this.campoBusqueda.pressSequentially(
       nombreActor,
       { delay: 100 }

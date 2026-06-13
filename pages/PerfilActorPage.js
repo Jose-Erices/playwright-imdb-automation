@@ -21,21 +21,18 @@ class PerfilActorPage {
       })
       .first();
   }
-
+// Método para navegar a la sección de próximos estrenos del actor
   async desplegarProximosEstrenos() {
     await this.botonCreditos.scrollIntoViewIfNeeded();
-
     await this.botonCreditos.click();
-
     await this.page.waitForLoadState(
       'domcontentloaded'
     );
-
     await this.pestanaProximosEstrenos.scrollIntoViewIfNeeded();
-
     await this.pestanaProximosEstrenos.click();
   }
 
+  // Método para obtener el enlace de la primera película próxima a estrenarse en la que el actor tiene un crédito completo
   async obtenerEnlacePelicula() {
     return await this.primeraPeliculaCompletada.getAttribute(
       'href'

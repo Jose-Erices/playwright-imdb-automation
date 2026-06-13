@@ -7,8 +7,8 @@ test.describe('IMDb - Breaking Bad Fotos', () => {
 
     const seriesPage = new SeriesPage(page);
 
-    await page.goto('https://www.imdb.com', {
-      waitUntil: 'domcontentloaded'
+   await page.goto("/", {
+      waitUntil: "domcontentloaded",
     });
 
     await seriesPage.navegarATop250Series();
