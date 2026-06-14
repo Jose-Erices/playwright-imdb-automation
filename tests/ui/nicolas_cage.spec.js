@@ -9,6 +9,7 @@ test.describe("IMDb - Nicolas Cage", () => {
     const barraSuperior = new BarraSuperiorPage(page);
     const perfilActor = new PerfilActorPage(page);
 
+    // Prueba UI automatizada para validar el flujo de Nicolas Cage en IMDb.
     // Navegar a IMDb
  await page.goto("/", {
       waitUntil: "domcontentloaded",
