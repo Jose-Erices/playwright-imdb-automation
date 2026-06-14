@@ -10,9 +10,9 @@ test.describe("IMDb - Nicolas Cage", () => {
     const perfilActor = new PerfilActorPage(page);
 
     // Navegar a IMDb
-    await page.goto("/", {
-      waitUntil: "domcontentloaded",
-    });
+ await page.goto(rutaPelicula, {
+  waitUntil: "load",
+});
 
     // Buscar actor
     await barraSuperior.buscarActor("Nicolas Cage");
