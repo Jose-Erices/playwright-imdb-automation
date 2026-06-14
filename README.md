@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Desafío de Automatización IMDb y PokeAPI
 
 ## Descripción
@@ -159,3 +160,7 @@ npx cypress run --e2e --spec "tests/api/berry-flavor.cy.js"
 **Jose Antonio Erices Gonzalez**
 
 Solución desarrollada utilizando Playwright y Cypress para pruebas automatizadas UI y API.
+=======
+# playwright-imdb-automation
+Proyecto QA Automation con Playwright y JavaScript, enfocado en pruebas end-to-end UI sobre IMDb y validaciones API, utilizando Page Object Model.
+>>>>>>> 81dbd90044749c6974e7baea8b437c105ebb2b60
