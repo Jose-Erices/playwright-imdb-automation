@@ -96,6 +96,11 @@ npx playwright test tests/ui/breaking-bad-fotos.spec.js --headed --project=chrom
 ```
 
 ### Caso 4 - Celebridades nacidas ayer
+## Observaciones
+
+- Durante la implementación se detectó un comportamiento inconsistente en el filtro de cumpleaños de IMDb para la búsqueda de celebridades nacidas ayer.
+- Se incorporó una alternativa basada en parámetros de URL para mantener la estabilidad de la automatización.
+- El flujo original mediante el campo de búsqueda fue conservado como referencia en el código.
 
 ```bash
 npx playwright test tests/ui/celebridades-nacidas-ayer.spec.js --headed --project=chromium

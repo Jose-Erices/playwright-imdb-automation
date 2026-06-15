@@ -50,13 +50,12 @@ class NacidosHoyPage {
     });
   }
 
-
   // IMDb actualmente no está aplicando correctamente el filtro
   // mediante el campo DD-MM, incluso realizando la prueba manualmente.
   // Se utiliza búsqueda por URL como alternativa estable, que corresponde al metodo que esta mas abajo
-  //se debe desbloquear parametros en Celebridades nacidas ayer.spec.js 
+  //se debe desbloquear parametros en Celebridades nacidas ayer.spec.js
   // Ingresar fecha de cumpleaños para buscar celebridades nacidas ayer
-/*
+  /*
   async buscarCelebridadesNacidasAyer() {
     const ayer = new Date();
     ayer.setDate(ayer.getDate() - 1);
@@ -91,21 +90,21 @@ class NacidosHoyPage {
     console.log(`Fecha ingresada: ${fechaAyer}`);
   }*/
 
-     //se deja la siguiente solucion,  Se utiliza búsqueda por URL como alternativa estable.
-    async buscarCelebridadesNacidasAyer() {
-  const ayer = new Date();
-  ayer.setDate(ayer.getDate() - 1);
-  const dia = String(ayer.getDate()).padStart(2, "0");
-  const mes = String(ayer.getMonth() + 1).padStart(2, "0");
-  const fechaAyerUrl = `${mes}-${dia}`;
+  //se deja la siguiente solucion,  Se utiliza búsqueda por URL como alternativa estable.
+  async buscarCelebridadesNacidasAyer() {
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    const dia = String(ayer.getDate()).padStart(2, "0");
+    const mes = String(ayer.getMonth() + 1).padStart(2, "0");
+    const fechaAyerUrl = `${mes}-${dia}`;
 
-  await this.page.goto(
-    `https://www.imdb.com/search/name/?birth_monthday=${fechaAyerUrl}`
-  );
+    await this.page.goto(
+      `https://www.imdb.com/search/name/?birth_monthday=${fechaAyerUrl}`,
+    );
 
-  await this.page.waitForLoadState("domcontentloaded");
-  console.log(`Fecha enviada por URL: ${fechaAyerUrl}`);
-}
+    await this.page.waitForLoadState("domcontentloaded");
+    console.log(`Fecha enviada por URL: ${fechaAyerUrl}`);
+  }
 
   // Seleccionar el tercer resultado de la lista de celebridades nacidas ayer
   async seleccionarTercerResultado() {
@@ -174,6 +173,22 @@ class NacidosHoyPage {
     await fechaHasta.press("Enter");
 
     await this.page.waitForTimeout(1000);
+  }
+
+  //ver resultados de celebridades nacidas hace 40 años
+  async verResultados() {
+    const botonVerResultados = this.page.getByRole("button", {
+      name: /Ver resultados/i,
+    });
+
+    await botonVerResultados.waitFor({
+      state: "visible",
+      timeout: 15000,
+    });
+
+    await botonVerResultados.click();
+
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   //Abrir el primer enlace de descripción del primer resultado de la lista de celebridades nacidas hace 40 años y tomar captura del perfil de la celebridad.
