@@ -50,51 +50,83 @@ class NacidosHoyPage {
     });
   }
 
+
+  // IMDb actualmente no está aplicando correctamente el filtro
+  // mediante el campo DD-MM, incluso realizando la prueba manualmente.
+  // Se utiliza búsqueda por URL como alternativa estable, que corresponde al metodo que esta mas abajo
+  //se debe desbloquear parametros en Celebridades nacidas ayer.spec.js 
   // Ingresar fecha de cumpleaños para buscar celebridades nacidas ayer
+/*
   async buscarCelebridadesNacidasAyer() {
     const ayer = new Date();
     ayer.setDate(ayer.getDate() - 1);
     const dia = String(ayer.getDate()).padStart(2, "0");
     const mes = String(ayer.getMonth() + 1).padStart(2, "0");
     const fechaAyer = `${dia}-${mes}`;
-    const inputCumpleanos = this.page.locator(
-      '[data-testid="birthday-input-test-id"]',
-    );
+    const inputCumpleanos = this.page.getByPlaceholder("DD-MM").first();
 
     await inputCumpleanos.waitFor({
       state: "visible",
-      timeout: 10000,
+      timeout: 15000,
     });
 
-    await inputCumpleanos.fill(fechaAyer);
+    await inputCumpleanos.click();
+    await inputCumpleanos.fill("");
+    await inputCumpleanos.type(fechaAyer, { delay: 80 });
+    await this.page.waitForTimeout(1000);
     await inputCumpleanos.press("Enter");
-    await this.page.waitForLoadState("domcontentloaded");
-  }
 
-  // Hacer clic en "Ver resultados" para mostrar la lista de celebridades nacidas ayer
-  async verResultados() {
-    const botonVerResultados = this.page.locator(
-      'button[data-testid="adv-search-get-results"]',
-    );
+    const botonVerResultados = this.page.getByRole("button", {
+      name: /Ver resultados/i,
+    });
 
     await botonVerResultados.waitFor({
       state: "visible",
-      timeout: 10000,
+      timeout: 15000,
     });
 
-    await botonVerResultados.evaluate((el) => el.click());
+    await botonVerResultados.click();
     await this.page.waitForLoadState("domcontentloaded");
-  }
+
+    console.log(`Fecha ingresada: ${fechaAyer}`);
+  }*/
+
+     //se deja la siguiente solucion,  Se utiliza búsqueda por URL como alternativa estable.
+    async buscarCelebridadesNacidasAyer() {
+  const ayer = new Date();
+  ayer.setDate(ayer.getDate() - 1);
+  const dia = String(ayer.getDate()).padStart(2, "0");
+  const mes = String(ayer.getMonth() + 1).padStart(2, "0");
+  const fechaAyerUrl = `${mes}-${dia}`;
+
+  await this.page.goto(
+    `https://www.imdb.com/search/name/?birth_monthday=${fechaAyerUrl}`
+  );
+
+  await this.page.waitForLoadState("domcontentloaded");
+  console.log(`Fecha enviada por URL: ${fechaAyerUrl}`);
+}
 
   // Seleccionar el tercer resultado de la lista de celebridades nacidas ayer
   async seleccionarTercerResultado() {
-    const tercerResultado = this.page
-      .locator('[data-testid="nlib-title"] a')
-      .nth(2);
+    const resultados = this.page
+      .locator("li")
+      .filter({ has: this.page.locator('a[href^="/name/nm"]') });
+
+    await resultados.nth(2).waitFor({
+      state: "visible",
+      timeout: 15000,
+    });
+
+    const tercerResultado = resultados
+      .nth(2)
+      .locator('a[href^="/name/nm"]')
+      .first();
 
     await tercerResultado.scrollIntoViewIfNeeded();
     await tercerResultado.click();
-    await this.page.waitForURL(/\/name\//);
+
+    await this.page.waitForURL(/\/name\/nm/);
   }
 
   // Tomamos la captura del perfil de la celebridad nacida ayer.

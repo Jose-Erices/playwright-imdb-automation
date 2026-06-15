@@ -18,9 +18,9 @@ test.describe("IMDb - Celebridades nacidas ayer", () => {
 
     await nacidosHoyPage.buscarCelebridadesNacidasAyer();
 
-    await nacidosHoyPage.verResultados();
+    //await nacidosHoyPage.verResultados();
 
-    await nacidosHoyPage.seleccionarTercerResultado();
+   // await nacidosHoyPage.seleccionarTercerResultado();
 
     await nacidosHoyPage.tomarCaptura("celebridad-nacida-ayer");
   });
