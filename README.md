@@ -47,7 +47,7 @@ tests/
 
 ---
 
-# Instalación
+# Instalación ( Debes estar en la carpeta correcta del proyecto para hacer la intalación de las dependencias del proyecto"
 
 Instalar dependencias del proyecto:
 
