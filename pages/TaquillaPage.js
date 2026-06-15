@@ -86,19 +86,19 @@ class TaquillaPage {
       timeout: 10000,
     });
 
-    const box = await this.barraEstrellas.boundingBox();
+  const box = await this.barraEstrellas.boundingBox();
 
-    if (box) {
-      const posicionX = box.width * 0.45;
-      const posicionY = box.height / 2;
+if (!box) {
+  throw new Error("No se pudo obtener el tamaño de la barra de estrellas");
+}
 
-      await this.barraEstrellas.click({
-        position: {
-          x: posicionX,
-          y: posicionY,
-        },
-      });
-    }
+const rating = 5;
+const total = 10;
+
+const x = box.x + (box.width / total) * (rating - 0.5);
+const y = box.y + box.height / 2;
+
+await this.page.mouse.click(x, y);
 
     const botonPuntuarFinal = this.page
       .locator('button:has-text("Puntuar")')
